@@ -45,6 +45,19 @@
  * ============================================================================
  * 💡 SOLUCIÓN
  * ============================================================================
+ *
+ * TABLA DE MAPEO (dado en el problema):
+ * ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
+ * │  1  │  2  │  3  │  4  │  5  │  6  │  7  │  8  │  9  │ 10  │
+ * │ 'a' │ 'b' │ 'c' │ 'd' │ 'e' │ 'f' │ 'g' │ 'h' │ 'i' │ 'j' │
+ * ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+ * │ 11  │ 12  │ 13  │ 14  │ 15  │ 16  │ 17  │ 18  │ 19  │ 20  │
+ * │ 'k' │ 'l' │ 'm' │ 'n' │ 'o' │ 'p' │ 'q' │ 'r' │ 's' │ 't' │
+ * ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+ * │ 21  │ 22  │ 23  │ 24  │ 25  │ 26  │
+ * │ 'u' │ 'v' │ 'w' │ 'x' │ 'y' │ 'z' │
+ * └─────┴─────┴─────┴─────┴─────┴─────┘
+ *
  * ESTRATEGIA:
  * Usar programación dinámica donde dp[i] representa el número de formas
  * de decodificar el string hasta la posición i.
@@ -131,6 +144,17 @@ function numDecodingsWithArray(s) {
   return { ways: dp[n], dpArray: dp };
 }
 
+// Función auxiliar: Convierte un número (1-26) a su letra correspondiente
+// Mapeo: 1='a', 2='b', 3='c', ..., 26='z'
+function numberToLetter(num) {
+  // Usamos códigos ASCII: 'a' está en la posición 97
+  // Entonces: 97 + (num - 1) = código ASCII de la letra
+  // Ejemplo: num=1 → 97+0=97 → 'a'
+  //          num=2 → 97+1=98 → 'b'
+  //          num=26 → 97+25=122 → 'z'
+  return String.fromCharCode(96 + num);
+}
+
 // Función para encontrar todas las decodificaciones posibles
 function findAllDecodings(s) {
   const results = [];
@@ -142,18 +166,20 @@ function findAllDecodings(s) {
       return;
     }
 
-    // Intentar tomar un dígito
+    // Intentar tomar un dígito (1-9)
     const oneDigit = parseInt(s[index]);
     if (oneDigit >= 1 && oneDigit <= 9) {
-      const letter = String.fromCharCode(96 + oneDigit); // 'a' = 97
+      // Convertir número a letra usando el mapeo 1='a', 2='b', etc.
+      const letter = numberToLetter(oneDigit);
       backtrack(index + 1, [...current, letter]);
     }
 
-    // Intentar tomar dos dígitos
+    // Intentar tomar dos dígitos (10-26)
     if (index + 1 < s.length) {
       const twoDigits = parseInt(s.substring(index, index + 2));
       if (twoDigits >= 10 && twoDigits <= 26) {
-        const letter = String.fromCharCode(96 + twoDigits);
+        // Convertir número a letra usando el mapeo 10='j', 11='k', etc.
+        const letter = numberToLetter(twoDigits);
         backtrack(index + 2, [...current, letter]);
       }
     }
@@ -275,3 +301,5 @@ visualizeDecoding(test8);
 
 console.log("\n" + "=".repeat(60));
 console.log("🏁 TESTS COMPLETADOS\n");
+
+module.exports = { numDecodings, numDecodingsWithArray, findAllDecodings };
